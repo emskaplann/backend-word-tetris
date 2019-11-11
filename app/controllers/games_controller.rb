@@ -6,7 +6,15 @@ class GamesController < ApplicationController
   end
 
   def index
-    @games = Game.all
+    if params[:time]
+      @games = Game.all.sort_by{ |game| game.time}
+      @games.reverse
+    elsif params[:score]
+      @games = Game.all.sort_by{ |game| game.score}
+      @games.reverse
+    else
+      @games = Game.all
+    end
     render json: @games
   end
 
