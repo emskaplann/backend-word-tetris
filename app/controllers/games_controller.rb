@@ -8,10 +8,10 @@ class GamesController < ApplicationController
   def index
     if params[:time]
       @games = Game.all.sort_by{ |game| game.time}
-      @games.reverse
+      @games = @games.reverse
     elsif params[:score]
       @games = Game.all.sort_by{ |game| game.score}
-      @games.reverse
+      @games = @games.reverse
     else
       @games = Game.all
     end
