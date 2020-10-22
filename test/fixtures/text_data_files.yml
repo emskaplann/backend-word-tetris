@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  id: MyString
+  name: MyString
+  timestamp: 2020-10-21 22:00:27
+  link: MyString
+
+two:
+  id: MyString
+  name: MyString
+  timestamp: 2020-10-21 22:00:27
+  link: MyString

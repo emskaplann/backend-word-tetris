@@ -1,0 +1,3 @@
+class TextDataFile < ApplicationRecord
+    
+end
