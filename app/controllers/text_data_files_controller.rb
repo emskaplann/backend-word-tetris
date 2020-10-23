@@ -10,8 +10,14 @@ class TextDataFilesController < ApplicationController
         available_headers = params[:table_headers].split(',')
         file = params[:file]
 
-        # byebug
-        csv_table = CSV.parse(File.read(file), headers: true)
+        byebug
+        # parse according to the file type
+        if(file.content_type == "text/tab-separated-values")
+            csv_table = CSV.parse(File.read(file), :headers => true, :col_sep => "\t")
+        else
+            csv_table = CSV.parse(File.read(file), :headers => true)
+        end
+
         columns_to_delete = Set.new(csv_table.headers) ^ available_headers # O(n) time complexity
 
         columns_to_delete.each do |col| # deleting the columns we don't want
@@ -28,6 +34,14 @@ class TextDataFilesController < ApplicationController
         duplicate_id_list = []
         non_convertible_timestamp_id_list = []
 
+        # Delete Non Applicable Columns
+        csv_table.delete_if do |row|
+            if(row[id_header] == "NA" || row[id_header] == "Na" || row[id_header] == "na" || row[id_header] == "")
+                true
+            end
+        end
+        # End of deleting
+
         # processing each column
         csv_table.each do |row|
             # Processing ID Column
@@ -39,18 +53,16 @@ class TextDataFilesController < ApplicationController
             # End of processing ID Column
 
             # Processing Timestamp Column
-            if(!is_date?(row[timestamp_header])) 
+            if(!is_date?(row[timestamp_header]) && !is_datetime?(row[timestamp_header])) 
                 non_convertible_timestamp_id_list.push(row[id_header]) 
             end
             # End of processing Timestamp Column
         end
 
         if(duplicate_id_list.length > 0 || non_convertible_timestamp_id_list.length > 0) 
-            byebug
             # return error to the client and don't import it into the system.
             render json: {error: true, success: false, duplicate_id_list_length: duplicate_id_list.length, non_convertible_timestamp_id_list_length: non_convertible_timestamp_id_list.length, duplicate_id_list: duplicate_id_list, non_convertible_timestamp_id_list: non_convertible_timestamp_id_list}, :status => :success
         else
-            byebug
             # upload the file to the db and return success code to the client
 
             # write the file
@@ -66,7 +78,7 @@ class TextDataFilesController < ApplicationController
             File.delete(file_location)
 
             # create the object and return necessary values to the front end
-            new_file = TextDataFiles.create(:id => id_header, :name => name_header, :timestamp => timestamp_header, :link => file_url)
+            new_file = TextDataFile.create(:id => id_header, :name => name_header, :timestamp => timestamp_header, :link => file_url)
             render json: {success: true, error: false, url: new_file.link, id: new_file.id, name: new_file.name, timestamp: new_file.timestamp}, :status => :success
         end
     end
