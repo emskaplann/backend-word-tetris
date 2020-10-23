@@ -11,7 +11,6 @@ class TextDataFilesController < ApplicationController
         file = params[:file]
 
         # byebug
-
         csv_table = CSV.parse(File.read(file), headers: true)
         columns_to_delete = Set.new(csv_table.headers) ^ available_headers # O(n) time complexity
 
@@ -29,13 +28,14 @@ class TextDataFilesController < ApplicationController
         duplicate_id_list = []
         non_convertible_timestamp_id_list = []
 
+        # processing each column
         csv_table.each do |row|
             # Processing ID Column
             if(id_map[row[id_header]])
                 duplicate_id_list.push(row[id_header])
-                return false
+            else
+                id_map[row[id_header]] = true
             end
-            id_map[row[id_header]] = true
             # End of processing ID Column
 
             # Processing Timestamp Column
@@ -46,9 +46,11 @@ class TextDataFilesController < ApplicationController
         end
 
         if(duplicate_id_list.length > 0 || non_convertible_timestamp_id_list.length > 0) 
+            byebug
             # return error to the client and don't import it into the system.
             render json: {error: true, success: false, duplicate_id_list_length: duplicate_id_list.length, non_convertible_timestamp_id_list_length: non_convertible_timestamp_id_list.length, duplicate_id_list: duplicate_id_list, non_convertible_timestamp_id_list: non_convertible_timestamp_id_list}, :status => :success
         else
+            byebug
             # upload the file to the db and return success code to the client
 
             # write the file
