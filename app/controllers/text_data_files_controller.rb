@@ -10,7 +10,6 @@ class TextDataFilesController < ApplicationController
         available_headers = params[:table_headers].split(',')
         file = params[:file]
 
-        byebug
         # parse according to the file type
         if(file.content_type == "text/tab-separated-values")
             csv_table = CSV.parse(File.read(file), :headers => true, :col_sep => "\t")
@@ -61,7 +60,7 @@ class TextDataFilesController < ApplicationController
 
         if(duplicate_id_list.length > 0 || non_convertible_timestamp_id_list.length > 0) 
             # return error to the client and don't import it into the system.
-            render json: {error: true, success: false, duplicate_id_list_length: duplicate_id_list.length, non_convertible_timestamp_id_list_length: non_convertible_timestamp_id_list.length, duplicate_id_list: duplicate_id_list, non_convertible_timestamp_id_list: non_convertible_timestamp_id_list}, :status => :success
+            render json: {error: true, success: false, duplicate_id_list_length: duplicate_id_list.length, non_convertible_timestamp_id_list_length: non_convertible_timestamp_id_list.length, duplicate_id_list: duplicate_id_list, non_convertible_timestamp_id_list: non_convertible_timestamp_id_list}, :status => :ok
         else
             # upload the file to the db and return success code to the client
 
@@ -78,8 +77,8 @@ class TextDataFilesController < ApplicationController
             File.delete(file_location)
 
             # create the object and return necessary values to the front end
-            new_file = TextDataFile.create(:id => id_header, :name => name_header, :timestamp => timestamp_header, :link => file_url)
-            render json: {success: true, error: false, url: new_file.link, id: new_file.id, name: new_file.name, timestamp: new_file.timestamp}, :status => :success
+            @new_file = TextDataFile.create(:id => id_header, :name => name_header, :timestamp => timestamp_header, :link => file_url)
+            render json: @new_file, :serializer => TextDataFileSerializer, :status => :ok
         end
     end
 end

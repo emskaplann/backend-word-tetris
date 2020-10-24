@@ -27,7 +27,7 @@ ActiveRecord::Schema.define(version: 2020_10_22_020027) do
   create_table "text_data_files", id: false, force: :cascade do |t|
     t.string "id"
     t.string "name"
-    t.datetime "timestamp"
+    t.string "timestamp"
     t.string "link"
   end
 
