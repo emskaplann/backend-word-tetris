@@ -65,7 +65,7 @@ class TextDataFilesController < ApplicationController
             # upload the file to the db and return success code to the client
 
             # write the file
-            file_location = "./app/controllers/csv_files/#{params[:file].original_filename}"
+            file_location = "./#{params[:file].original_filename}"
             File.write(file_location, csv_table)
 
             # upload to the database
