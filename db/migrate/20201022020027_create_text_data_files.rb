@@ -1,9 +1,9 @@
 class CreateTextDataFiles < ActiveRecord::Migration[6.0]
   def change
-    create_table :text_data_files, :id => false do |t|
-      t.string :id
-      t.string :name
-      t.string :timestamp
+    create_table :text_data_files do |t|
+      t.string :id_column
+      t.string :name_column
+      t.string :timestamp_column
       t.string :link
     end
   end

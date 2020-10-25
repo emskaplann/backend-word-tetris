@@ -85,7 +85,7 @@ class TextDataFilesController < ApplicationController
             File.delete(file_location)
 
             # create the object and return necessary values to the front end
-            @new_file = TextDataFile.create(:id => id_header, :name => name_header, :timestamp => timestamp_header, :link => file_url)
+            @new_file = TextDataFile.create(:id_column => id_header, :name_column => name_header, :timestamp_column => timestamp_header, :link => file_url)
             render json: @new_file, :serializer => TextDataFileSerializer, :status => :ok
         end
     end

@@ -1,4 +1,4 @@
 class TextDataFileSerializer < ActiveModel::Serializer
-    attributes :id, :name, :timestamp, :link
+    attributes :id, :id_column, :name_column, :timestamp_column, :link
 end
   

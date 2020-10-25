@@ -24,10 +24,10 @@ ActiveRecord::Schema.define(version: 2020_10_22_020027) do
     t.index ["user_id"], name: "index_games_on_user_id"
   end
 
-  create_table "text_data_files", id: false, force: :cascade do |t|
-    t.string "id"
-    t.string "name"
-    t.string "timestamp"
+  create_table "text_data_files", force: :cascade do |t|
+    t.string "id_column"
+    t.string "name_column"
+    t.string "timestamp_column"
     t.string "link"
   end
 
