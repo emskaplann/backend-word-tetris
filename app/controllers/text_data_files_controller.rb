@@ -3,6 +3,11 @@ require 'set'
 require 'date'
 
 class TextDataFilesController < ApplicationController
+    def index
+        @all_files = TextDataFile.all
+        render json: @all_files, :status => :ok
+    end
+    
     def create
         id_header = params[:id]
         name_header = params[:name]
