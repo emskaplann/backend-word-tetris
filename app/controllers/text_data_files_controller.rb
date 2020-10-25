@@ -11,10 +11,14 @@ class TextDataFilesController < ApplicationController
         file = params[:file]
 
         # parse according to the file type
-        if(file.content_type == "text/tab-separated-values")
-            csv_table = CSV.parse(File.read(file), :headers => true, :col_sep => "\t")
+        if(params[:as_string] === "true") 
+            csv_table = CSV.parse(file, headers: true)
         else
-            csv_table = CSV.parse(File.read(file), :headers => true)
+            if(file.content_type == "text/tab-separated-values")
+                csv_table = CSV.parse(File.read(file), :headers => true, :col_sep => "\t")
+            else
+                csv_table = CSV.parse(File.read(file), :headers => true)
+            end
         end
 
         columns_to_delete = Set.new(csv_table.headers) ^ available_headers # O(n) time complexity
@@ -65,7 +69,11 @@ class TextDataFilesController < ApplicationController
             # upload the file to the db and return success code to the client
 
             # write the file
-            file_location = "./#{params[:file].original_filename}"
+            if(params[:as_string])
+                file_location = "./temp-file.csv"
+            else
+                file_location = "./#{params[:file].original_filename}"
+            end
             File.write(file_location, csv_table)
 
             # upload to the database

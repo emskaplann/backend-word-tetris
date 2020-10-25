@@ -11,7 +11,7 @@ class ApplicationController < ActionController::API
             return false
         end
         temp = splitted_str.join()
-        ['%m%d%Y','%m%d%y','%M%D%Y','%M%D%y'].each do |f|
+        ['%m%d%Y',"%d%m%Y",'%m%d%y',"%d%m%y",'%D%M%Y','%M%D%Y','%D%M%y','%M%D%y'].each do |f|
         begin
             return true if Date.strptime(temp, f)
             rescue
@@ -34,7 +34,7 @@ class ApplicationController < ActionController::API
         end
         temp = splitted_str.join()
         puts(temp)
-        ['%m%d%Y%H%M','%m%d%y%H%M','%M%D%Y%H%M','%M%D%y%H%M'].each do |f|
+        ['%m%d%Y%H%M','%d%m%Y%H%M','%m%d%y%H%M','%d%m%y%H%M','%M%D%Y%H%M','%D%M%Y%H%M','%D%M%y%H%M','%M%D%y%H%M'].each do |f|
         begin
             return true if DateTime.strptime(temp, f)
             rescue
