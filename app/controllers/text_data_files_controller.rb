@@ -3,19 +3,20 @@ require 'set'
 require 'date'
 
 class TextDataFilesController < ApplicationController
-    def index
+    def index # rendering all created objects to the user, url is ..../text-data-files, GET Request
         @all_files = TextDataFile.all
         render json: @all_files, :status => :ok
     end
     
-    def create
-        id_header = params[:id]
+    def create # validating, creating and importing the new file to the internal system, url is ..../text-data-files, POST Request
+        # getting parameters from the request
+        id_header = params[:id] 
         name_header = params[:name]
         timestamp_header = params[:timestamp]
         available_headers = params[:table_headers].split(',')
         file = params[:file]
 
-        # parse according to the file type
+        # parse according to the file type, checking file type 
         if(params[:as_string] === "true") 
             csv_table = CSV.parse(file, headers: true)
         else
@@ -26,9 +27,10 @@ class TextDataFilesController < ApplicationController
             end
         end
 
+        # mapping columns we need to delete
         columns_to_delete = Set.new(csv_table.headers) ^ available_headers # O(n) time complexity
 
-        columns_to_delete.each do |col| # deleting the columns we don't want
+        columns_to_delete.each do |col| # deleting the columns user don't want
             csv_table.delete(col)
         end
 
@@ -97,7 +99,7 @@ class TextDataFilesController < ApplicationController
 end
 
 
-# request body from the client
+# example request body from the client
 #   {
 #     file: this.state.selectedFile,
 #     tableHeaders: ["header_1", "header_2", "header_3", "header_4"]

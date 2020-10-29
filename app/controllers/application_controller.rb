@@ -1,5 +1,5 @@
 class ApplicationController < ActionController::API
-    def is_date?(date_str)
+    def is_date?(date_str) # I validate timestamps with this function
         begin
             splitted_str = date_str.split(/\W+/)
             for i in 0..splitted_str.length - 1
@@ -21,7 +21,7 @@ class ApplicationController < ActionController::API
         return false
     end
 
-    def is_datetime?(datetime_str)
+    def is_datetime?(datetime_str) # I also validate timestamps with this function if they're not date
         begin
             splitted_str = datetime_str.split(/\W+/)
             for i in 0..splitted_str.length - 1
